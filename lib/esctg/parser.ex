@@ -17,11 +17,12 @@ defmodule Esctg.Parser do
   defp parse_message!(msg) do
     text =
       msg
-      |> Floki.find(".tgme_widget_message_text")
+      |> Floki.find("div.tgme_widget_message_text")
+      |> Enum.take(-1)
       |> Floki.text()
 
     [datetime] = Floki.attribute(msg, "time", "datetime")
-    # datetime = DateTime.from_iso8601(datetime)
+    {:ok, datetime, _} = DateTime.from_iso8601(datetime)
 
     %{
       id: parse_id!(msg),
@@ -43,7 +44,8 @@ defmodule Esctg.Parser do
 
   defp parse_media!(msg) do
     # in case of multiple images it will return them all
-    Floki.attribute(msg, "a.tgme_widget_message_photo_wrap", "style")
+    msg
+    |> Floki.attribute("a.tgme_widget_message_photo_wrap", "style")
     |> Enum.map(&parse_background_image/1)
   end
 
