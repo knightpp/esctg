@@ -23,7 +23,7 @@ defmodule Esctg.MixProject do
     [
       {:req, "~> 0.5"},
       {:floki, "~> 0.36"},
-      {:fast_html, "~> 2.3"},
+      # {:fast_html, "~> 2.3"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
