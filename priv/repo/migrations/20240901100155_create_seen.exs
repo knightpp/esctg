@@ -2,9 +2,9 @@ defmodule Esctg.Repo.Migrations.CreateSeen do
   use Ecto.Migration
 
   def change do
-    create table(:seen) do
-      add(:id, :integer)
-      add(:channel_id, :integer)
+    create table(:seens) do
+      add(:post_id, :integer, null: false)
+      add(:channel_id, references("channels"), null: false)
     end
   end
 end

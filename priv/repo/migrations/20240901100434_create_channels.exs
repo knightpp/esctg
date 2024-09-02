@@ -3,8 +3,8 @@ defmodule Esctg.Repo.Migrations.CreateChannels do
 
   def change do
     create table(:channels) do
-      add(:id, :integer)
-      add(:name, :string)
+      add(:url, :string, size: 255, null: false)
+      add(:name, :string, size: 255, null: false)
     end
   end
 end
