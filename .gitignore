@@ -26,3 +26,4 @@ esctg-*.tar
 /tmp/
 
 /*.db
+/*.db-*
