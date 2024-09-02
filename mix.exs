@@ -23,6 +23,8 @@ defmodule Esctg.MixProject do
     [
       {:req, "~> 0.5"},
       {:floki, "~> 0.36"},
+      {:ecto_sql, "~> 3.12"},
+      {:ecto_sqlite3, "~> 0.17"},
       # {:fast_html, "~> 2.3"},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
