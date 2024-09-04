@@ -3,6 +3,10 @@ defmodule Esctg.Channel do
 
   schema "channels" do
     field(:url, :string)
-    field(:name, :string)
+    field(:title, :string)
+    field(:image, :string)
+    field(:description, :string)
+    field(:mastodon_token, :string)
+    field(:enabled, :boolean)
   end
 end
