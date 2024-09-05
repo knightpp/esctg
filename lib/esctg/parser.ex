@@ -79,4 +79,28 @@ defmodule Esctg.Parser do
       _ -> nil
     end
   end
+
+  # defmodule Channel do
+  #   @enforce_keys [:title, :image, :description, :messages]
+  #   defstruct [:title, :image, :description, :messages]
+
+  #   @type t :: %__MODULE__{
+  #           title: String.t(),
+  #           image: String.t(),
+  #           description: String.t(),
+  #           messages: [Esctg.Parser.Message.t()]
+  #         }
+  # end
+
+  # defmodule Message do
+  #   @enforce_keys [:id, :text, :media, :datetime]
+  #   defstruct [:id, :text, :media, :datetime]
+
+  #   @type t :: %__MODULE__{
+  #           id: String.t(),
+  #           text: String.t(),
+  #           media: [String.t()],
+  #           datetime: DateTime.t()
+  #         }
+  # end
 end

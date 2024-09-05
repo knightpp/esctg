@@ -14,7 +14,7 @@ defmodule Esctg.Scanner do
     scan expects a precreated channel. Its description or title might be nil,
     but `url` should be set.
   """
-  def scan(%Channel{} = chan) do
+  def scan!(%Channel{} = chan) do
     %{status: 200, body: body} = Req.get!(chan.url)
     Esctg.Parser.parse!(body)
   end
@@ -23,8 +23,8 @@ defmodule Esctg.Scanner do
     The same as `scan` but returns only new messages, that haven't been
     seen.
   """
-  def scan_new(%Channel{} = chan) do
-    info = scan(chan.url)
+  def scan_new!(%Channel{} = chan) do
+    info = scan!(chan.url)
 
     max_id =
       Repo.one!(from(s in Seen, where: s.channel_id == ^chan.id, select: max(s.post_id)))

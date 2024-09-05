@@ -6,7 +6,8 @@ defmodule Esctg.Channel do
     field(:title, :string)
     field(:image, :string)
     field(:description, :string)
-    field(:mastodon_token, :string)
+    field(:api_token, :string)
+    field(:api_url, :string)
     field(:enabled, :boolean)
   end
 end
