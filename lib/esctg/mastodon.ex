@@ -5,7 +5,17 @@ defmodule Esctg.Mastodon do
   end
 
   def verify_credentials!(req) do
-    %{status: 200, body: body} = Req.get!(req, url: "api/v1/apps/verify_credentials")
+    %{status: 200, body: body} = Req.get!(req, url: "/api/v1/apps/verify_credentials")
+    body
+  end
+
+  def update_credentials!(req, params) do
+    %{status: 200, body: body} =
+      Req.patch!(req,
+        url: "/api/v1/accounts/update_credentials",
+        form_multipart: params
+      )
+
     body
   end
 

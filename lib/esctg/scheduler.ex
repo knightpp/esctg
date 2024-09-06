@@ -14,7 +14,8 @@ defmodule Esctg.Scheduler do
 
   @impl GenServer
   def handle_info(:timeout, chan) do
-    info = Esctg.Scanner.scan_new(chan)
+    info = Esctg.Scanner.scan_new!(chan)
     Esctg.Poster.post!(chan, info.messages)
+    {:noreply, chan, :timer.hours(1)}
   end
 end
