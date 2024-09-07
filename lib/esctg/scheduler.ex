@@ -1,5 +1,6 @@
 defmodule Esctg.Scheduler do
   use GenServer
+  require Logger
 
   alias Esctg.Channel
 
@@ -9,7 +10,7 @@ defmodule Esctg.Scheduler do
 
   @impl GenServer
   def init(%Channel{} = chan) do
-    {:ok, chan, :timer.hours(1)}
+    {:ok, chan, {:continue, :ok}}
   end
 
   @impl GenServer
@@ -17,5 +18,12 @@ defmodule Esctg.Scheduler do
     info = Esctg.Scanner.scan_new!(chan)
     Esctg.Poster.post!(chan, info.messages)
     {:noreply, chan, :timer.hours(1)}
+  end
+
+  @impl GenServer
+  def handle_continue(:ok, chan) do
+    # first time it should not wait to give supervisor an ability to kill itself
+    Logger.info("initializing scheduler for #{chan.title}")
+    handle_info(:timeout, chan)
   end
 end

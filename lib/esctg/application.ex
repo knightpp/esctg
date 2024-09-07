@@ -6,7 +6,9 @@ defmodule Esctg.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Esctg.Repo
+      Esctg.Repo,
+      Esctg.Scheduler.Supervisor,
+      Esctg.Scheduler.Loader
     ]
 
     opts = [strategy: :one_for_one, name: __MODULE__]

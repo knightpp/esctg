@@ -17,7 +17,7 @@ defmodule Esctg.Scanner do
       Repo.one!(from(s in Seen, where: s.channel_id == ^chan.id, select: max(s.post_id)))
 
     messages =
-      info.latest.messages
+      info.messages
       |> Enum.filter(fn msg -> msg.id > max_id end)
 
     %{info | messages: messages}

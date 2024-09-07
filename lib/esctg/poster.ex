@@ -10,13 +10,15 @@ defmodule Esctg.Poster do
   def post!(chan, msgs) do
     req = Mastodon.new(chan.api_url, chan.api_token)
 
-    Enum.each(msgs, fn msg ->
+    msgs
+    |> Stream.filter(fn msg ->
       q = from(s in Seen, where: s.post_id == ^msg.id and s.channel_id == ^chan.id)
-
-      if not Repo.exists?(q) do
-        post_msg!(req, msg)
-        Repo.insert!(%Seen{post_id: msg.id, channel_id: chan.id})
-      end
+      not Repo.exists?(q)
+    end)
+    # |> Enum.sort(fn a, b -> a.id < b.id end)
+    |> Enum.each(fn msg ->
+      post_msg!(req, msg)
+      Repo.insert!(%Seen{post_id: msg.id, channel_id: chan.id})
     end)
   end
 
