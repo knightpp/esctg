@@ -33,20 +33,22 @@ defmodule Esctg.Channel do
     |> Ecto.Changeset.unique_constraint(:url)
   end
 
-  def create_new!(%{url: url, api_token: api_token, api_url: api_url}) do
-    chan =
-      %Esctg.Channel{
-        url: url,
-        api_token: api_token,
-        api_url: api_url,
-        title: "",
-        image: "",
-        description: "",
-        enabled: true
-      }
-      |> changeset()
-      |> Esctg.Repo.insert!()
-
+  def start_new!(arg) do
+    chan = create_new!(arg)
     Esctg.Scheduler.Supervisor.start_child(chan)
+  end
+
+  def create_new!(%{url: url, api_token: api_token, api_url: api_url}) do
+    %Esctg.Channel{
+      url: url,
+      api_token: api_token,
+      api_url: api_url,
+      title: "temporary",
+      image: "",
+      description: "",
+      enabled: true
+    }
+    |> changeset()
+    |> Esctg.Repo.insert!()
   end
 end
