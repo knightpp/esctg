@@ -24,7 +24,7 @@ defmodule Esctg.Accountant do
     avatar = Esctg.Http.prepare_multipart!(info.image)
 
     Mastodon.update_credentials!(req,
-      display_name: info.title <> " 🪞bot",
+      display_name: info.title <> "🪞bot",
       note: info.description,
       bot: "true",
       avatar: avatar
