@@ -9,5 +9,23 @@ defmodule Esctg.Channel do
     field(:api_token, :string)
     field(:api_url, :string)
     field(:enabled, :boolean)
+    timestamps()
+  end
+
+  def changeset(chan, params \\ %{}) do
+    fields = [
+      :url,
+      :title,
+      :image,
+      :description,
+      :api_token,
+      :api_url,
+      :enabled
+    ]
+
+    chan
+    |> Ecto.Changeset.cast(params, fields)
+    |> Ecto.Changeset.validate_required(fields)
+    |> Ecto.Changeset.unique_constraint(:url)
   end
 end
