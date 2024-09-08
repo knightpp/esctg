@@ -1,5 +1,6 @@
 defmodule Esctg.Scanner do
   import Ecto.Query, only: [from: 2]
+  require Logger
 
   alias Esctg.Repo
   alias Esctg.Channel
@@ -12,9 +13,10 @@ defmodule Esctg.Scanner do
 
   def scan_new!(%Channel{} = chan) do
     info = scan!(chan.url)
+    Logger.debug("scan of #{info.title} returned #{Enum.count(info.messages)}")
 
     max_id =
-      Repo.one!(from(s in Seen, where: s.channel_id == ^chan.id, select: max(s.post_id)))
+      Repo.one(from(s in Seen, where: s.channel_id == ^chan.id, select: max(s.post_id))) || 0
 
     messages =
       info.messages

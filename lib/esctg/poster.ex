@@ -17,14 +17,16 @@ defmodule Esctg.Poster do
     end)
     # |> Enum.sort(fn a, b -> a.id < b.id end)
     |> Enum.each(fn msg ->
+      Logger.info("posting msg to #{chan.title} post_id=#{msg.id}")
       post_msg!(req, msg)
-      Repo.insert!(%Seen{post_id: msg.id, channel_id: chan.id})
+
+      %Seen{post_id: msg.id, channel_id: chan.id}
+      |> Seen.changeset()
+      |> Repo.insert!()
     end)
   end
 
   defp post_msg!(req, msg) do
-    Logger.info("posting msg id=#{msg.id}")
-
     # TODO: support more than 4 media
     media_ids =
       msg.media

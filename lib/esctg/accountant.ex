@@ -27,7 +27,9 @@ defmodule Esctg.Accountant do
       display_name: info.title <> "🪞bot",
       note: info.description,
       bot: "true",
-      avatar: avatar
+      avatar: avatar,
+      discoverable: "true"
+      # :"source[language]" # TODO: add new column with lang
     )
 
     chan

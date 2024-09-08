@@ -13,7 +13,8 @@ defmodule Esctg.Channel do
   end
 
   def changeset(chan, params \\ %{}) do
-    fields = [
+    chan
+    |> Ecto.Changeset.cast(params, [
       :url,
       :title,
       :image,
@@ -21,11 +22,31 @@ defmodule Esctg.Channel do
       :api_token,
       :api_url,
       :enabled
-    ]
-
-    chan
-    |> Ecto.Changeset.cast(params, fields)
-    |> Ecto.Changeset.validate_required(fields)
+    ])
+    |> Ecto.Changeset.validate_required([
+      :url,
+      :title,
+      :api_token,
+      :api_url,
+      :enabled
+    ])
     |> Ecto.Changeset.unique_constraint(:url)
+  end
+
+  def create_new!(%{url: url, api_token: api_token, api_url: api_url}) do
+    chan =
+      %Esctg.Channel{
+        url: url,
+        api_token: api_token,
+        api_url: api_url,
+        title: "",
+        image: "",
+        description: "",
+        enabled: true
+      }
+      |> changeset()
+      |> Esctg.Repo.insert!()
+
+    Esctg.Scheduler.Supervisor.start_child(chan)
   end
 end
