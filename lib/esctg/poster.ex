@@ -17,7 +17,8 @@ defmodule Esctg.Poster do
     end)
     # |> Enum.sort(fn a, b -> a.id < b.id end)
     |> Enum.each(fn msg ->
-      Logger.info("posting msg to #{chan.title} post_id=#{msg.id}")
+      Logger.info("posting msg chan.title=#{chan.title} post_id=#{msg.id} chan.url=#{chan.url}")
+
       post_msg!(req, msg)
 
       %Seen{post_id: msg.id, channel_id: chan.id}
@@ -47,7 +48,7 @@ defmodule Esctg.Poster do
   end
 
   defp upload_media!(req, url) do
-    file = Esctg.Http.prepare_multipart!(url)
+    file = Esctg.Http.prepare_multipart!(req, url)
     %{"id" => id} = Mastodon.upload_media!(req, file: file)
     id
   end

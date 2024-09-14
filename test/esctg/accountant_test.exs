@@ -5,6 +5,8 @@ defmodule Esctg.AccountantTest do
   alias Esctg.Channel
   alias Esctg.Accountant
 
+  @moduletag capture_log: true
+
   @tg_response File.read!("test/data/daifuku.html")
 
   setup do
@@ -23,14 +25,23 @@ defmodule Esctg.AccountantTest do
     assert_raise(Ecto.NoResultsError, fn -> Accountant.maybe_update_info!(nil, "plugged") end)
   end
 
-  test "should crash when empty database2" do
+  test "should update channel info" do
     Req.Test.expect(Accountant, &Req.Test.html(&1, @tg_response))
+    Req.Test.expect(Accountant, &Req.Test.text(&1, "not an image"))
+
+    Req.Test.expect(Accountant, fn conn ->
+      assert conn.method == "PATCH"
+      assert conn.request_path == "/api/v1/accounts/update_credentials"
+      assert {:ok, body, conn} = Plug.Conn.read_body(conn)
+      assert String.contains?(body, "дайфуку вишневий коло хати 🌸")
+      assert String.contains?(body, "not an image")
+      Req.Test.json(conn, %{})
+    end)
+
     req = Req.new(plug: {Req.Test, Accountant})
 
-    chan =
-      Esctg.Channel.create_new!(%{url: "https://plugged", api_token: "token", api_url: "api_url"})
+    _ = Channel.insert_new!("https://plugged", "token", "api_url")
 
-    # TODO: scanner does not use passed req
     Accountant.maybe_update_info!(req, "https://plugged")
   end
 end

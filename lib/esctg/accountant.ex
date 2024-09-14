@@ -1,5 +1,6 @@
 defmodule Esctg.Accountant do
   import Ecto.Query, only: [from: 2]
+  require Logger
 
   alias Esctg.Channel
   alias Esctg.Repo
@@ -8,7 +9,7 @@ defmodule Esctg.Accountant do
 
   def maybe_update_info!(req, url) do
     chan = Repo.one!(from(c in Channel, where: c.url == ^url))
-    info = Scanner.scan!(chan.url)
+    info = Scanner.scan!(req, chan.url)
 
     if should_update_info?(chan, info) do
       update_info!(req, chan, info)
@@ -21,7 +22,9 @@ defmodule Esctg.Accountant do
   end
 
   defp update_info!(req, %Channel{} = chan, info) do
-    avatar = Esctg.Http.prepare_multipart!(info.image)
+    Logger.notice("updating info chan=#{chan.url}")
+
+    avatar = Esctg.Http.prepare_multipart!(req, info.image)
 
     Mastodon.update_credentials!(req,
       display_name: info.title <> "🪞bot",

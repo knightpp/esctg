@@ -2,6 +2,8 @@ defmodule Esctg.ParserTest do
   use ExUnit.Case, async: true
   alias Esctg.Parser
 
+  @moduletag capture_log: true
+
   @data_daifuku File.read!("test/data/daifuku.html")
   @expect_daifuku File.read!("test/data/daifuku.expect")
   @data_ogo File.read!("test/data/ogo.html")

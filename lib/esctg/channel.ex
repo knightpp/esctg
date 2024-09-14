@@ -1,5 +1,6 @@
 defmodule Esctg.Channel do
   use Ecto.Schema
+  require Logger
 
   schema "channels" do
     field(:url, :string)
@@ -34,11 +35,13 @@ defmodule Esctg.Channel do
   end
 
   def start_new!(arg) do
-    chan = create_new!(arg)
+    Logger.notice("start new channel scheduler url=#{arg.url}")
+
+    chan = insert_new!(arg.url, arg.api_token, arg.api_url)
     Esctg.Scheduler.Supervisor.start_child(chan)
   end
 
-  def create_new!(%{url: url, api_token: api_token, api_url: api_url}) do
+  def insert_new!(url, api_token, api_url) do
     %Esctg.Channel{
       url: url,
       api_token: api_token,

@@ -27,7 +27,8 @@ defmodule Esctg.MixProject do
       {:ecto_sql, "~> 3.12"},
       {:ecto_sqlite3, "~> 0.17"},
       # {:fast_html, "~> 2.3"},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:plug, "~> 1.0", only: [:test]}
     ]
   end
 end

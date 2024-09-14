@@ -6,13 +6,13 @@ defmodule Esctg.Scanner do
   alias Esctg.Channel
   alias Esctg.Seen
 
-  def scan!(url) do
-    %{status: 200, body: body} = Req.get!(url)
+  def scan!(req, url) do
+    %{status: 200, body: body} = Req.get!(req, url: url, auth: "")
     Esctg.Parser.parse!(body)
   end
 
-  def scan_new!(%Channel{} = chan) do
-    info = scan!(chan.url)
+  def scan_new!(req, %Channel{} = chan) do
+    info = scan!(req, chan.url)
     Logger.debug("scan of #{info.title} returned #{Enum.count(info.messages)}")
 
     max_id =
