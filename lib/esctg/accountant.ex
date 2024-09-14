@@ -1,24 +1,17 @@
 defmodule Esctg.Accountant do
-  import Ecto.Query, only: [from: 2]
   require Logger
 
   alias Esctg.Channel
   alias Esctg.Repo
-  alias Esctg.Scanner
   alias Esctg.Mastodon
 
-  def maybe_update_info!(req, url) do
-    chan = Repo.one!(from(c in Channel, where: c.url == ^url))
-    info = Scanner.scan!(req, chan.url)
-
+  def maybe_update_info!(req, chan, info) do
     if should_update_info?(chan, info) do
       update_info!(req, chan, info)
+      true
+    else
+      false
     end
-
-    %{
-      chan: chan,
-      info: info
-    }
   end
 
   defp update_info!(req, %Channel{} = chan, info) do
@@ -26,8 +19,15 @@ defmodule Esctg.Accountant do
 
     avatar = Esctg.Http.prepare_multipart!(req, info.image)
 
+    name =
+      if String.graphemes(info.title) <= 26 do
+        info.title <> "🪞bot"
+      else
+        String.slice(info.title, 0, 30)
+      end
+
     Mastodon.update_credentials!(req,
-      display_name: info.title <> "🪞bot",
+      display_name: name,
       note: info.description,
       bot: "true",
       avatar: avatar,

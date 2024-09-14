@@ -7,8 +7,6 @@ defmodule Esctg.AccountantTest do
 
   @moduletag capture_log: true
 
-  @tg_response File.read!("test/data/daifuku.html")
-
   setup do
     :ok = Ecto.Migrator.up(Repo, 20_240_901_100_155, Repo.Migrations.CreateSeen, all: true)
     :ok = Ecto.Migrator.up(Repo, 20_240_901_100_434, Repo.Migrations.CreateChannels, all: true)
@@ -21,27 +19,27 @@ defmodule Esctg.AccountantTest do
     Req.Test.verify_on_exit!()
   end
 
-  test "should crash when empty database" do
-    assert_raise(Ecto.NoResultsError, fn -> Accountant.maybe_update_info!(nil, "plugged") end)
-  end
-
   test "should update channel info" do
-    Req.Test.expect(Accountant, &Req.Test.html(&1, @tg_response))
     Req.Test.expect(Accountant, &Req.Test.text(&1, "not an image"))
 
     Req.Test.expect(Accountant, fn conn ->
       assert conn.method == "PATCH"
       assert conn.request_path == "/api/v1/accounts/update_credentials"
       assert {:ok, body, conn} = Plug.Conn.read_body(conn)
-      assert String.contains?(body, "дайфуку вишневий коло хати 🌸")
+      assert String.contains?(body, "new title")
+      assert String.contains?(body, "new test descr")
       assert String.contains?(body, "not an image")
       Req.Test.json(conn, %{})
     end)
 
     req = Req.new(plug: {Req.Test, Accountant})
 
-    _ = Channel.insert_new!("https://plugged", "token", "api_url")
+    chan = Channel.insert_new!("https://plugged", "token", "api_url")
 
-    Accountant.maybe_update_info!(req, "https://plugged")
+    Accountant.maybe_update_info!(req, chan, %{
+      title: "new title",
+      image: "https://test-image.url",
+      description: "new test descr"
+    })
   end
 end
