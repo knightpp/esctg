@@ -10,6 +10,7 @@ defmodule Esctg.Channel do
     field(:api_token, :string)
     field(:api_url, :string)
     field(:enabled, :boolean)
+    has_many(:seen, Esctg.Seen, on_delete: :delete_all)
     timestamps()
   end
 
