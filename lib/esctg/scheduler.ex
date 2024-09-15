@@ -14,13 +14,17 @@ defmodule Esctg.Scheduler do
   end
 
   @impl GenServer
-  def handle_info(:timeout, chan) do
+  def handle_info(:check, chan) do
+    Process.send_after(self(), :check, :timer.hours(1))
+
     req = Esctg.Mastodon.new(chan.api_url, chan.api_token)
     info = Esctg.Scanner.scan_new!(req, chan)
-    Esctg.Accountant.maybe_update_info!(req, chan, info)
     Logger.debug("channel #{info.title} has #{Enum.count(info.messages)} new messages")
+
+    Esctg.Accountant.maybe_update_info!(req, chan, info)
     Esctg.Poster.post!(chan, info.messages)
-    {:noreply, chan, :timer.hours(1)}
+
+    {:noreply, chan}
   end
 
   @impl GenServer
