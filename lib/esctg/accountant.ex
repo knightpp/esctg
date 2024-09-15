@@ -7,6 +7,8 @@ defmodule Esctg.Accountant do
 
   def maybe_update_info!(req, chan, info) do
     if should_update_info?(chan, info) do
+      dbg(chan)
+      dbg(info)
       update_info!(req, chan, info)
       true
     else
