@@ -31,6 +31,6 @@ defmodule Esctg.Scheduler do
   def handle_continue(:ok, chan) do
     # first time it should not wait to give supervisor an ability to kill itself
     Logger.info("initializing scheduler for #{chan.title}")
-    handle_info(:timeout, chan)
+    handle_info(:check, chan)
   end
 end
