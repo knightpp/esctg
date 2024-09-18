@@ -44,7 +44,8 @@ defmodule Esctg.Accountant do
 
   defp should_update_info?(old_chan, new_chan) do
     old_chan.title != new_chan.title or
-      old_chan.description != new_chan.description or
-      old_chan.image != new_chan.image
+      old_chan.description != new_chan.description
+
+    # old_chan.image != new_chan.image
   end
 end
